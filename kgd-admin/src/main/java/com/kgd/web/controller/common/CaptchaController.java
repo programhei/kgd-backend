@@ -41,6 +41,7 @@ public class CaptchaController
     private ISysConfigService configService;
     /**
      * 生成验证码
+     * 
      */
     @GetMapping("/captchaImage")
     public AjaxResult getCode(HttpServletResponse response) throws IOException
