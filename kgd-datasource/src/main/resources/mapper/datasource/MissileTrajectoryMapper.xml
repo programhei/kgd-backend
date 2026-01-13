@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.datasource.mapper.MissileTrajectoryMapper">
+
+    <resultMap type="MissileTrajectoryVo" id="MissileTrajectoryVoResult">
+        <result property="id" column="id"/>
+        <result property="time" column="time"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="altitude" column="altitude"/>
+        <result property="flag" column="flag"/>
+    </resultMap>
+
+    <sql id="selectMissileTrajectoryVo">
+        select id,
+               time,
+               longitude,
+               latitude,
+               altitude,
+               flag
+        from missile_trajectory
+    </sql>
+
+    <select id="selectMissileTrajectoryList" parameterType="MissileTrajectoryVo" resultMap="MissileTrajectoryVoResult">
+        <include refid="selectMissileTrajectoryVo"/>
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="time != null">and time = #{time}</if>
+            <if test="longitude != null">and longitude = #{longitude}</if>
+            <if test="latitude != null">and latitude = #{latitude}</if>
+            <if test="altitude != null">and altitude = #{altitude}</if>
+            <if test="flag != null">and flag = #{flag}</if>
+        </where>
+        order by time
+    </select>
+
+    <select id="selectMissileTrajectoryById" parameterType="Long" resultMap="MissileTrajectoryVoResult">
+        <include refid="selectMissileTrajectoryVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectMissileTrajectoryAll" resultMap="MissileTrajectoryVoResult">
+        <include refid="selectMissileTrajectoryVo"/>
+    </select>
+
+    <insert id="insertMissileTrajectory" parameterType="MissileTrajectoryVo" useGeneratedKeys="true" keyProperty="id">
+        insert into missile_trajectory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="time != null">time,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="altitude != null">altitude,</if>
+            <if test="flag != null">flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="time != null">#{time},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="altitude != null">#{altitude},</if>
+            <if test="flag != null">#{flag},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertMissileTrajectoryBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into missile_trajectory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].time != null">time,</if>
+            <if test="list[0].longitude != null">longitude,</if>
+            <if test="list[0].latitude != null">latitude,</if>
+            <if test="list[0].altitude != null">altitude,</if>
+            <if test="list[0].flag != null">flag,</if>
+        </trim>
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.time != null">#{item.time},</if>
+                <if test="item.longitude != null">#{item.longitude},</if>
+                <if test="item.latitude != null">#{item.latitude},</if>
+                <if test="item.altitude != null">#{item.altitude},</if>
+                <if test="item.flag != null">#{item.flag},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateMissileTrajectory" parameterType="MissileTrajectoryVo">
+        update missile_trajectory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="time != null">time = #{time},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="altitude != null">altitude = #{altitude},</if>
+            <if test="flag != null">flag = #{flag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMissileTrajectoryById" parameterType="Long">
+        delete
+        from missile_trajectory
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMissileTrajectoryByFlag" parameterType="int">
+        delete
+        from missile_trajectory
+        where flag = #{flag}
+    </delete>
+
+    <delete id="deleteMissileTrajectoryByIds" parameterType="String">
+        delete from missile_trajectory where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.MissileDataMapper">
+
+    <resultMap type="MissileData" id="MissileDataResult">
+        <result property="id" column="id"/>
+        <result property="flightTime" column="flight_time"/>
+        <result property="x" column="x"/>
+        <result property="z" column="z"/>
+        <result property="y" column="y"/>
+        <result property="dataTitle" column="data_title"/>
+        <result property="enhancedState" column="enhanced_state"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+        <result property="dimension" column="dimension"/>
+    </resultMap>
+
+    <sql id="selectMissileDataVo">
+        select id,
+               flight_time,
+               x,
+               y,
+               z,
+               data_title,
+               enhanced_state,
+               create_time,
+               update_time,
+               create_by,
+               update_by,
+               data_type,
+               is_standard,dimension
+        from missile_data
+    </sql>
+
+    <select id="selectMissileDataList" parameterType="MissileData" resultMap="MissileDataResult">
+        <include refid="selectMissileDataVo"/>
+        <where>
+            <if test="flightTime != null  and flightTime != ''">and flight_time = #{flightTime}</if>
+            <if test="x != null ">and x = #{x}</if>
+            <if test="z != null ">and z = #{z}</if>
+            <if test="y != null ">and y = #{y}</if>
+            <if test="dataTitle != null  and dataTitle != ''">and data_title = #{dataTitle}</if>
+            <if test="enhancedState != null  and enhancedState != ''">and enhanced_state = #{enhancedState}</if>
+            <if test="createTime != null  and createTime != ''">and create_time = #{createTime}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMissileDataById" parameterType="Long" resultMap="MissileDataResult">
+        <include refid="selectMissileDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMissileData" parameterType="MissileData" useGeneratedKeys="true" keyProperty="id">
+        insert into missile_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flightTime != null">flight_time,</if>
+            <if test="x != null">x,</if>
+            <if test="z != null">z,</if>
+            <if test="y != null">y,</if>
+            <if test="dataTitle != null">data_title,</if>
+            <if test="enhancedState != null">enhanced_state,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="dimension != null">dimension,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="flightTime != null">#{flightTime},</if>
+            <if test="x != null">#{x},</if>
+            <if test="z != null">#{z},</if>
+            <if test="y != null">#{y},</if>
+            <if test="dataTitle != null">#{dataTitle},</if>
+            <if test="enhancedState != null">#{enhancedState},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="dimension != null">#{dimension},</if>
+        </trim>
+    </insert>
+    <!-- 批量插入，返回主键 id 列表 -->
+    <insert id="insertMissileDataBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into missile_data
+        <!-- 1. 列名：以第一条数据为准 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].flightTime != null">flight_time,</if>
+            <if test="list[0].x != null">x,</if>
+            <if test="list[0].z != null">z,</if>
+            <if test="list[0].y != null">y,</if>
+            <if test="list[0].dataTitle != null">data_title,</if>
+            <if test="list[0].enhancedState != null">enhanced_state,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].dimension != null">dimension,</if>
+        </trim>
+
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.flightTime != null">#{item.flightTime},</if>
+                <if test="item.x != null">#{item.x},</if>
+                <if test="item.z != null">#{item.z},</if>
+                <if test="item.y != null">#{item.y},</if>
+                <if test="item.dataTitle != null">#{item.dataTitle},</if>
+                <if test="item.enhancedState != null">#{item.enhancedState},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.dimension != null">#{item.dimension},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateMissileData" parameterType="MissileData">
+        update missile_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flightTime != null">flight_time = #{flightTime},</if>
+            <if test="x != null">x = #{x},</if>
+            <if test="z != null">z = #{z},</if>
+            <if test="y != null">y = #{y},</if>
+            <if test="dataTitle != null">data_title = #{dataTitle},</if>
+            <if test="enhancedState != null">enhanced_state = #{enhancedState},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMissileDataById" parameterType="Long">
+        delete
+        from missile_data
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMissileDataByIds" parameterType="String">
+        delete from missile_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMissileDataByDataId" parameterType="java.lang.String">
+        delete
+        from missile_data
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteMissileData" parameterType="java.lang.String">
+        delete
+        from missile_data
+        where is_standard = #{isStandard}
+          and data_type = #{dataType}
+    </delete>
+</mapper>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.IntelligentDecisionEvaluateMapper">
+
+    <resultMap type="IntelligentDecisionEvaluate" id="IntelligentDecisionEvaluateResult">
+        <result property="id" column="id"/>
+        <result property="createTerrain" column="create_terrain"/>
+        <result property="perspectiveDesign" column="perspective_design"/>
+        <result property="flightTrajectoryVisualization" column="flight_trajectory_visualization"/>
+        <result property="flightAttitude" column="flight_attitude"/>
+        <result property="winLossEvaluation" column="win_loss_evaluation"/>
+        <result property="effectivenessEvaluation" column="effectiveness_evaluation"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectIntelligentDecisionEvaluateVo">
+        select id,
+               create_terrain,
+               perspective_design,
+               flight_trajectory_visualization,
+               flight_attitude,
+               win_loss_evaluation,
+               effectiveness_evaluation,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from intelligent_decision_evaluate
+    </sql>
+
+    <select id="selectIntelligentDecisionEvaluateList" parameterType="IntelligentDecisionEvaluate"
+            resultMap="IntelligentDecisionEvaluateResult">
+        <include refid="selectIntelligentDecisionEvaluateVo"/>
+        <where>
+            <if test="createTerrain != null  and createTerrain != ''">and create_terrain = #{createTerrain}</if>
+            <if test="perspectiveDesign != null  and perspectiveDesign != ''">and perspective_design = #{perspectiveDesign}</if>
+            <if test="flightTrajectoryVisualization != null ">and flight_trajectory_visualization = #{flightTrajectoryVisualization}</if>
+            <if test="flightAttitude != null  and flightAttitude != ''">and flight_attitude =
+                #{flightAttitude}
+            </if>
+            <if test="winLossEvaluation != null  and winLossEvaluation != ''">and win_loss_evaluation = #{winLossEvaluation}</if>
+            <if test="effectivenessEvaluation != null  and effectivenessEvaluation != ''">and effectiveness_evaluation = #{effectivenessEvaluation}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectIntelligentDecisionEvaluateById" parameterType="Long" resultMap="IntelligentDecisionEvaluateResult">
+        <include refid="selectIntelligentDecisionEvaluateVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertIntelligentDecisionEvaluate" parameterType="IntelligentDecisionEvaluate" useGeneratedKeys="true" keyProperty="id">
+        insert into intelligent_decision_evaluate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createTerrain != null">create_terrain,</if>
+            <if test="perspectiveDesign != null">perspective_design,</if>
+            <if test="flightTrajectoryVisualization != null">flight_trajectory_visualization,</if>
+            <if test="flightAttitude != null">flight_attitude,</if>
+            <if test="winLossEvaluation != null">win_loss_evaluation,</if>
+            <if test="effectivenessEvaluation != null">effectiveness_evaluation,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createTerrain != null">#{createTerrain},</if>
+            <if test="perspectiveDesign != null">#{perspectiveDesign},</if>
+            <if test="flightTrajectoryVisualization != null">#{flightTrajectoryVisualization},</if>
+            <if test="flightAttitude != null">#{flightAttitude},</if>
+            <if test="winLossEvaluation != null">#{winLossEvaluation},</if>
+            <if test="effectivenessEvaluation != null">#{effectivenessEvaluation},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+
+        </trim>
+    </insert>
+
+    <insert id="insertIntelligentDecisionEvaluateBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into intelligent_decision_evaluate
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].createTerrain != null">create_terrain,</if>
+            <if test="list[0].perspectiveDesign != null">perspective_design,</if>
+            <if test="list[0].flightTrajectoryVisualization != null">flight_trajectory_visualization,</if>
+            <if test="list[0].flightAttitude != null">flight_attitude,</if>
+            <if test="list[0].winLossEvaluation != null">win_loss_evaluation,</if>
+            <if test="list[0].effectivenessEvaluation != null">effectiveness_evaluation,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+        </trim>
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.createTerrain != null">#{item.createTerrain},</if>
+                <if test="item.perspectiveDesign != null">#{item.perspectiveDesign},</if>
+                <if test="item.flightTrajectoryVisualization != null">#{item.flightTrajectoryVisualization},</if>
+                <if test="item.flightAttitude != null">#{item.flightAttitude},</if>
+                <if test="item.winLossEvaluation != null">#{item.winLossEvaluation},</if>
+                <if test="item.effectivenessEvaluation != null">#{item.effectivenessEvaluation},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateIntelligentDecisionEvaluate" parameterType="IntelligentDecisionEvaluate">
+        update intelligent_decision_evaluate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createTerrain != null">create_terrain = #{createTerrain},</if>
+            <if test="perspectiveDesign != null">perspective_design = #{perspectiveDesign},</if>
+            <if test="flightTrajectoryVisualization != null">flight_trajectory_visualization = #{flightTrajectoryVisualization},</if>
+            <if test="flightAttitude != null">flight_attitude = #{flightAttitude},</if>
+            <if test="winLossEvaluation != null">win_loss_evaluation = #{winLossEvaluation},</if>
+            <if test="effectivenessEvaluation != null">effectiveness_evaluation = #{effectivenessEvaluation},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <!-- 批量更新 intelligent_decision -->
+    <update id="updateIntelligentDecisionEvaluateBatch" parameterType="java.util.List">
+        UPDATE intelligent_decision_evaluate
+        <trim prefix="SET" suffixOverrides=",">
+            <!-- 动态列：只更新列表里非 null 的字段 -->
+            <if test="list != null and list.size() > 0">
+                <!-- 每个字段一条 CASE WHEN -->
+                create_terrain = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.createTerrain}
+                </foreach>
+                ELSE create_terrain END,
+                perspective_design = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.perspectiveDesign}
+                </foreach>
+                ELSE perspective_design END,
+                flight_trajectory_visualization = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.flightTrajectoryVisualization}
+                </foreach>
+                ELSE flight_trajectory_visualization END,
+                flight_attitude = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.flightAttitude}
+                </foreach>
+                ELSE flight_attitude END,
+                win_loss_evaluation = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.winLossEvaluation}
+                </foreach>
+                ELSE win_loss_evaluation END,
+                effectiveness_evaluation = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.effectivenessEvaluation}
+                </foreach>
+                ELSE effectiveness_evaluation END,
+                create_by = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.createBy}
+                </foreach>
+                ELSE create_by END,
+                create_time = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.createTime}
+                </foreach>
+                ELSE create_time END,
+                update_by = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.updateBy}
+                </foreach>
+                ELSE update_by END,
+                update_time = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.updateTime}
+                </foreach>
+                ELSE update_time END
+            </if>
+        </trim>
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteIntelligentDecisionEvaluateById" parameterType="Long">
+        delete
+        from intelligent_decision_evaluate
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteIntelligentDecisionEvaluateByIds" parameterType="String">
+        delete from intelligent_decision_evaluate where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteIntelligentDecisionEvaluateByDataId" parameterType="Long">
+        delete
+        from intelligent_decision_evaluate
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteIntelligentDecisionEvaluate" parameterType="Long">
+        delete
+        from intelligent_decision_evaluate
+        where 1 = 1
+    </delete>
+</mapper>

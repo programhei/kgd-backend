@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.ScenarioConfigurationMapper">
+
+    <resultMap type="ScenarioConfiguration" id="ScenarioConfigurationResult">
+        <result property="id" column="id"/>
+        <result property="myAircraftQuantity" column="my_aircraft_quantity"/>
+        <result property="enemyAircraftQuantity" column="enemy_aircraft_quantity"/>
+        <result property="identification" column="identification"/>
+        <result property="initialMyAircraft" column="initial_my_aircraft"/>
+        <result property="initialEnemyAircraft" column="initial_enemy_aircraft"/>
+        <result property="aircraftGunsQuantity" column="aircraft_guns_quantity"/>
+        <result property="shortRangeMissilesQuantity" column="short_range_missiles_quantity"/>
+        <result property="mediumLongRangeMissilesQuantity" column="medium_long_range_missiles_quantity"/>
+        <result property="shortRangeCombat" column="short_range_combat"/>
+        <result property="mediumLongRangeCombat" column="medium_long_range_combat"/>
+        <result property="classificationRationality" column="classification_rationality"/>
+        <result property="basicFormation" column="basic_formation"/>
+        <result property="shortRangeFormation" column="short_range_formation"/>
+        <result property="mediumRangeFormation" column="medium_range_formation"/>
+        <result property="longRangeFormation" column="long_range_formation"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectScenarioConfigurationVo">
+        select id,
+               my_aircraft_quantity,
+               enemy_aircraft_quantity,
+               identification,
+               initial_my_aircraft,
+               initial_enemy_aircraft,
+               aircraft_guns_quantity,
+               short_range_missiles_quantity,
+               medium_long_range_missiles_quantity,
+               short_range_combat,
+               medium_long_range_combat,
+               classification_rationality,
+               basic_formation,
+               short_range_formation,
+               medium_range_formation,
+               long_range_formation,
+               is_standard,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from scenario_configuration
+    </sql>
+
+
+    <select id="selectScenarioConfigurationList" parameterType="ScenarioConfiguration"
+            resultMap="ScenarioConfigurationResult">
+        <include refid="selectScenarioConfigurationVo"/>
+        <where>
+            <if test="myAircraftQuantity != null  and myAircraftQuantity != ''">
+            and my_aircraft_quantity = #{myAircraftQuantity}
+            </if>
+            <if test="enemyAircraftQuantity != null  and enemyAircraftQuantity != ''">
+            and enemy_aircraft_quantity = #{enemyAircraftQuantity}
+            </if>
+            <if test="identification != null  and identification != ''">
+            and identification = #{identification}
+            </if>
+            <if test="initialMyAircraft != null  and initialMyAircraft != ''">
+            and initial_my_aircraft = #{initialMyAircraft}
+            </if>
+            <if test="initialEnemyAircraft != null  and initialEnemyAircraft != ''">
+            and initial_enemy_aircraft = #{initialEnemyAircraft}
+            </if>
+            <if test="aircraftGunsQuantity != null  and aircraftGunsQuantity != ''">
+            and aircraft_guns_quantity = #{aircraftGunsQuantity}
+            </if>
+            <if test="shortRangeMissilesQuantity != null  and shortRangeMissilesQuantity != ''">
+            and short_range_missiles_quantity = #{shortRangeMissilesQuantity}
+            </if>
+
+            <if test="mediumLongRangeMissilesQuantity != null  and mediumLongRangeMissilesQuantity != ''">
+                and medium_long_range_missiles_quantity = #{mediumLongRangeMissilesQuantity}
+            </if>
+            <if test="shortRangeCombat != null  and shortRangeCombat != ''">
+                and short_range_combat = #{shortRangeCombat}
+            </if>
+            <if test="mediumLongRangeCombat != null  and mediumLongRangeCombat != ''">
+                and medium_long_range_combat = #{mediumLongRangeCombat}
+            </if>
+            <if test="classificationRationality != null  and classificationRationality != ''">
+                and classification_rationality = #{classificationRationality}
+            </if>
+            <if test="basicFormation != null  and basicFormation != ''">
+                and basic_formation = #{basicFormation}
+            </if>
+            <if test="shortRangeFormation != null  and shortRangeFormation != ''">
+                and short_range_formation = #{shortRangeFormation}
+            </if>
+            <if test="mediumRangeFormation != null  and mediumRangeFormation != ''">
+                and medium_range_formation = #{mediumRangeFormation}
+            </if>
+            <if test="longRangeFormation != null  and longRangeFormation != ''">
+                and long_range_formation = #{longRangeFormation}
+            </if>
+
+            <if test="isStandard != null  and isStandard != ''">
+            and is_standard = #{isStandard}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+
+    <select id="selectScenarioConfigurationById" parameterType="Long" resultMap="ScenarioConfigurationResult">
+        <include refid="selectScenarioConfigurationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertScenarioConfiguration" parameterType="ScenarioConfiguration" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into scenario_configuration
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="myAircraftQuantity != null">my_aircraft_quantity,</if>
+            <if test="enemyAircraftQuantity != null">enemy_aircraft_quantity,</if>
+            <if test="identification != null">identification,</if>
+            <if test="initialMyAircraft != null">initial_my_aircraft,</if>
+            <if test="initialEnemyAircraft != null">initial_enemy_aircraft,</if>
+            <if test="aircraftGunsQuantity != null">aircraft_guns_quantity,</if>
+            <if test="shortRangeMissilesQuantity != null">short_range_missiles_quantity,</if>
+            <if test="mediumLongRangeMissilesQuantity != null">medium_long_range_missiles_quantity,</if>
+            <if test="shortRangeCombat != null">short_range_combat,</if>
+            <if test="mediumLongRangeCombat != null">medium_long_range_combat,</if>
+            <if test="classificationRationality != null">classification_rationality,</if>
+            <if test="basicFormation != null">basic_formation,</if>
+            <if test="shortRangeFormation != null">short_range_formation,</if>
+            <if test="mediumRangeFormation != null">medium_range_formation,</if>
+            <if test="longRangeFormation != null">long_range_formation,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="myAircraftQuantity != null">#{myAircraftQuantity},</if>
+            <if test="enemyAircraftQuantity != null">#{enemyAircraftQuantity},</if>
+            <if test="identification != null">#{identification},</if>
+            <if test="initialMyAircraft != null">#{initialMyAircraft},</if>
+            <if test="initialEnemyAircraft != null">#{initialEnemyAircraft},</if>
+            <if test="aircraftGunsQuantity != null">#{aircraftGunsQuantity},</if>
+            <if test="shortRangeMissilesQuantity != null">#{shortRangeMissilesQuantity},</if>
+            <if test="mediumLongRangeMissilesQuantity != null">#{mediumLongRangeMissilesQuantity},</if>
+            <if test="shortRangeCombat != null">#{shortRangeCombat},</if>
+            <if test="mediumLongRangeCombat != null">#{mediumLongRangeCombat},</if>
+            <if test="classificationRationality != null">#{classificationRationality},</if>
+            <if test="basicFormation != null">#{basicFormation},</if>
+            <if test="shortRangeFormation != null">#{shortRangeFormation},</if>
+            <if test="mediumRangeFormation != null">#{mediumRangeFormation},</if>
+            <if test="longRangeFormation != null">#{longRangeFormation},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 批量新增，只插入非空字段 -->
+    <insert id="insertScenarioConfigurationBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO scenario_configuration
+        (
+        <trim suffixOverrides=",">
+            <if test="list[0].myAircraftQuantity != null">my_aircraft_quantity,</if>
+            <if test="list[0].enemyAircraftQuantity != null">enemy_aircraft_quantity,</if>
+            <if test="list[0].identification != null">identification,</if>
+            <if test="list[0].initialMyAircraft != null">initial_my_aircraft,</if>
+            <if test="list[0].initialEnemyAircraft != null">initial_enemy_aircraft,</if>
+            <if test="list[0].aircraftGunsQuantity != null">aircraft_guns_quantity,</if>
+            <if test="list[0].shortRangeMissilesQuantity != null">short_range_missiles_quantity,</if>
+            <if test="list[0].mediumLongRangeMissilesQuantity != null">medium_long_range_missiles_quantity,</if>
+            <if test="list[0].shortRangeCombat != null">short_range_combat,</if>
+            <if test="list[0].mediumLongRangeCombat != null">medium_long_range_combat,</if>
+            <if test="list[0].classificationRationality != null">classification_rationality,</if>
+            <if test="list[0].basicFormation != null">basic_formation,</if>
+            <if test="list[0].shortRangeFormation != null">short_range_formation,</if>
+            <if test="list[0].mediumRangeFormation != null">medium_range_formation,</if>
+            <if test="list[0].longRangeFormation != null">long_range_formation,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+        </trim>
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            <trim suffixOverrides=",">
+                <if test="item.myAircraftQuantity != null">#{item.myAircraftQuantity},</if>
+                <if test="item.enemyAircraftQuantity != null">#{item.enemyAircraftQuantity},</if>
+                <if test="item.identification != null">#{item.identification},</if>
+                <if test="item.initialMyAircraft != null">#{item.initialMyAircraft},</if>
+                <if test="item.initialEnemyAircraft != null">#{item.initialEnemyAircraft},</if>
+                <if test="item.aircraftGunsQuantity != null">#{item.aircraftGunsQuantity},</if>
+                <if test="item.shortRangeMissilesQuantity != null">#{item.shortRangeMissilesQuantity},</if>
+                <if test="item.mediumLongRangeMissilesQuantity != null">#{item.mediumLongRangeMissilesQuantity},</if>
+                <if test="item.shortRangeCombat != null">#{item.shortRangeCombat},</if>
+                <if test="item.mediumLongRangeCombat != null">#{item.mediumLongRangeCombat},</if>
+                <if test="item.classificationRationality != null">#{item.classificationRationality},</if>
+                <if test="item.basicFormation != null">#{item.basicFormation},</if>
+                <if test="item.shortRangeFormation != null">#{item.shortRangeFormation},</if>
+                <if test="item.mediumRangeFormation != null">#{item.mediumRangeFormation},</if>
+                <if test="item.longRangeFormation != null">#{item.longRangeFormation},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+            </trim>
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateScenarioConfiguration" parameterType="ScenarioConfiguration">
+        update scenario_configuration
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="myAircraftQuantity != null">my_aircraft_quantity = #{myAircraftQuantity},</if>
+            <if test="enemyAircraftQuantity != null">enemy_aircraft_quantity = #{enemyAircraftQuantity},</if>
+            <if test="identification != null">identification = #{identification},</if>
+            <if test="initialMyAircraft != null">initial_my_aircraft = #{initialMyAircraft},</if>
+            <if test="initialEnemyAircraft != null">initial_enemy_aircraft = #{initialEnemyAircraft},</if>
+            <if test="aircraftGunsQuantity != null">aircraft_guns_quantity = #{aircraftGunsQuantity},</if>
+            <if test="shortRangeMissilesQuantity != null">short_range_missiles_quantity = #{shortRangeMissilesQuantity},</if>
+            <if test="mediumLongRangeMissilesQuantity != null">medium_long_range_missiles_quantity = #{mediumLongRangeMissilesQuantity},</if>
+            <if test="shortRangeCombat != null">short_range_combat = #{shortRangeCombat},</if>
+            <if test="mediumLongRangeCombat != null">medium_long_range_combat = #{mediumLongRangeCombat},</if>
+            <if test="classificationRationality != null">classification_rationality = #{classificationRationality},</if>
+            <if test="basicFormation != null">basic_formation = #{basicFormation},</if>
+            <if test="shortRangeFormation != null">short_range_formation = #{shortRangeFormation},</if>
+            <if test="mediumRangeFormation != null">medium_range_formation = #{mediumRangeFormation},</if>
+            <if test="longRangeFormation != null">long_range_formation = #{longRangeFormation},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteScenarioConfigurationById" parameterType="Long">
+        delete
+        from scenario_configuration
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteScenarioConfigurationByIds" parameterType="String">
+        delete from scenario_configuration where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <delete id="deleteScenarioConfigurationByDataId" parameterType="java.lang.String">
+        delete
+        from scenario_configuration
+        where create_time = #{dataId}
+    </delete>
+</mapper>

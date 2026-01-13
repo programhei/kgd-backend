@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.MissileModelMapper">
+
+    <resultMap type="MissileModel" id="MissileModelResult">
+        <result property="id" column="id"/>
+        <result property="missileRange" column="missile_range"/>
+        <result property="interceptDistance" column="intercept_distance"/>
+        <result property="killingRange" column="killing_range"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+
+    </resultMap>
+
+    <sql id="selectMissileModelVo">
+        select id,
+               missile_range,
+               intercept_distance,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               data_type,
+               is_standard,
+               killing_range
+        from missile_model
+    </sql>
+
+    <select id="selectMissileModelList" parameterType="MissileModel" resultMap="MissileModelResult">
+        <include refid="selectMissileModelVo"/>
+        <where>
+            <if test="missileRange != null  and missileRange != ''">and missile_range = #{missileRange}</if>
+            <if test="interceptDistance != null  and interceptDistance != ''">and intercept_distance =
+                #{interceptDistance}
+            </if>
+            <if test="dataType != null  and dataType != ''">and data_type = #{dataType}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+            <if test="killingRange != null  and killingRange != ''">and killing_range = #{killingRange}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMissileModelById" parameterType="Long" resultMap="MissileModelResult">
+        <include refid="selectMissileModelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMissileModel" parameterType="MissileModel" useGeneratedKeys="true" keyProperty="id">
+        insert into missile_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="missileRange != null">missile_range,</if>
+            <if test="interceptDistance != null">intercept_distance,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="killingRange != null">killing_range,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="missileRange != null">#{missileRange},</if>
+            <if test="interceptDistance != null">#{interceptDistance},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="killingRange != null">#{killingRange},</if>
+        </trim>
+    </insert>
+    <!-- 批量新增，只插入非空字段 -->
+    <insert id="insertMissileModelBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO missile_model
+        (
+        <trim suffixOverrides=",">
+            <if test="list[0].missileRange != null">missile_range,</if>
+            <if test="list[0].interceptDistance != null">intercept_distance,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].killingRange != null">killing_range,</if>
+        </trim>
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            <trim suffixOverrides=",">
+                <if test="item.missileRange != null">#{item.missileRange},</if>
+                <if test="item.interceptDistance != null">#{item.interceptDistance},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.killingRange != null">#{item.killingRange},</if>
+            </trim>
+            )
+        </foreach>
+    </insert>
+
+
+    <update id="updateMissileModel" parameterType="MissileModel">
+        update missile_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="missileRange != null">missile_range = #{missileRange},</if>
+            <if test="interceptDistance != null">intercept_distance = #{interceptDistance},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="killingRange != null">killing_range = #{killingRange},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMissileModelById" parameterType="Long">
+        delete from missile_model where id = #{id}
+    </delete>
+
+    <delete id="deleteMissileModelByIds" parameterType="String">
+        delete from missile_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMissileModelByDataId" parameterType="java.lang.String">
+        delete
+        from missile_model
+        where create_time = #{dataId}
+    </delete>
+</mapper>

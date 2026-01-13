@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.GunModelMapper">
+
+    <resultMap type="GunModel" id="GunModelResult">
+        <result property="id" column="id"/>
+        <result property="shootRange" column="shoot_range"/>
+        <result property="shootScope" column="shoot_scope"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+    </resultMap>
+
+    <sql id="selectGunModelVo">
+        select id,
+               shoot_range,
+               shoot_scope,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               data_type,
+               is_standard
+        from gun_model
+    </sql>
+
+    <select id="selectGunModelList" parameterType="GunModel" resultMap="GunModelResult">
+        <include refid="selectGunModelVo"/>
+        <where>
+            <if test="shootRange != null  and shootRange != ''">and shoot_range = #{shootRange}</if>
+            <if test="shootScope != null  and shootScope != ''">and shoot_scope = #{shootScope}</if>
+            <if test="dataType != null  and dataType != ''">and data_type = #{dataType}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectGunModelById" parameterType="Long" resultMap="GunModelResult">
+        <include refid="selectGunModelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGunModel" parameterType="GunModel" useGeneratedKeys="true" keyProperty="id">
+        insert into gun_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shootRange != null">shoot_range,</if>
+            <if test="shootScope != null">shoot_scope,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="dataType != null">data_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shootRange != null">#{shootRange},</if>
+            <if test="shootScope != null">#{shootScope},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="dataType != null">#{dataType},</if>
+        </trim>
+    </insert>
+    <insert id="insertGunModelBatch" useGeneratedKeys="true" keyProperty="id"
+            parameterType="java.util.List">
+        INSERT INTO gun_model
+        <!-- 统一取第一条记录做列名拼接，保证所有行字段一致 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].shootRange != null">shoot_range,</if>
+            <if test="list[0].shootScope != null">shoot_scope,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.shootRange != null">#{item.shootRange},</if>
+                <if test="item.shootScope != null">#{item.shootScope},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateGunModel" parameterType="GunModel">
+        update gun_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shootRange != null">shoot_range = #{shootRange},</if>
+            <if test="shootScope != null">shoot_scope = #{shootScope},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGunModelById" parameterType="Long">
+        delete
+        from gun_model
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteGunModelByIds" parameterType="String">
+        delete from gun_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteGunModelByDataId" parameterType="java.lang.String">
+        delete
+        from gun_model
+        where create_time = #{dataId}
+    </delete>
+</mapper>

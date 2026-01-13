@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.datasource.mapper.ExperimentalRecordMapper">
+
+    <resultMap type="ExperimentalRecord" id="ExperimentalRecordResult">
+        <result property="id" column="id"/>
+        <result property="experimentalId" column="experimental_id"/>
+        <result property="experimentalCount" column="experimental_count"/>
+        <result property="variable" column="variable"/>
+        <result property="variableValue" column="variable_value"/>
+        <result property="score" column="score"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="dimension" column="dimension"/>
+    </resultMap>
+
+    <sql id="selectExperimentalRecordVo">
+        select id,
+               experimental_id,
+               experimental_count,
+               variable,
+               variable_value,
+               score,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               dimension
+        from experimental_record
+    </sql>
+
+    <select id="selectExperimentalRecordList" parameterType="ExperimentalRecord" resultMap="ExperimentalRecordResult">
+        <include refid="selectExperimentalRecordVo"/>
+        <where>
+            <if test="experimentalId != null  and experimentalId != ''">and experimental_id = #{experimentalId}</if>
+            <if test="experimentalCount != null  and experimentalCount != ''">and experimental_count =
+                #{experimentalCount}
+            </if>
+            <if test="variable != null  and variable != ''">and variable = #{variable}</if>
+            <if test="variableValue != null  and variableValue != ''">and variable_value = #{variableValue}</if>
+            <if test="score != null  and score != ''">and score = #{score}</if>
+            <if test="dimension != null  and dimension != ''">and dimension = #{dimension}</if>
+        </where>
+    </select>
+
+    <select id="selectExperimentalRecordById" parameterType="Long" resultMap="ExperimentalRecordResult">
+        <include refid="selectExperimentalRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <!--    &#45;&#45; 查当前最大序号 -->
+    <select id="selectMaxExpSerial" resultType="int">
+        SELECT IFNULL(MAX(CAST(experimental_count AS UNSIGNED)), 0)
+        FROM experimental_record
+        WHERE dimension = #{dimension}
+          AND variable = #{variable}
+          AND variable_value = #{variableValue}
+    </select>
+    <!--    &#45;&#45; 查当前最大实验ID（用于截取最后一段）-->
+    <select id="selectMaxExpId" resultType="string">
+        SELECT experimental_id
+        FROM experimental_record
+        WHERE dimension = #{dimension}
+          AND variable = #{variable}
+          AND variable_value = #{variableValue}
+        ORDER BY CAST(SUBSTRING_INDEX(experimental_id, '--', -1) AS UNSIGNED) DESC LIMIT 1
+    </select>
+    <!--    判断库里是否已存在该组合-->
+    <select id="countByDimensionVariableValue" resultType="int">
+        SELECT COUNT(*)
+        FROM experimental_record
+        WHERE dimension = #{dimension}
+          AND variable = #{variable}
+          AND variable_value = #{variableValue}
+    </select>
+
+    <insert id="insertExperimentalRecord" parameterType="ExperimentalRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into experimental_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="experimentalId != null">experimental_id,</if>
+            <if test="experimentalCount != null">experimental_count,</if>
+            <if test="variable != null">variable,</if>
+            <if test="variableValue != null">variable_value,</if>
+            <if test="score != null">score,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="dimension != null">dimension,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="experimentalId != null">#{experimentalId},</if>
+            <if test="experimentalCount != null">#{experimentalCount},</if>
+            <if test="variable != null">#{variable},</if>
+            <if test="variableValue != null">#{variableValue},</if>
+            <if test="score != null">#{score},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="dimension != null">#{dimension},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertExperimentalRecordBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into experimental_record
+        (experimental_id, experimental_count, variable, variable_value,
+        score, create_by, create_time, update_by, update_time,dimension)
+        values
+        <foreach collection="list" item="e" separator=",">
+            (#{e.experimentalId}, #{e.experimentalCount}, #{e.variable}, #{e.variableValue},
+            #{e.score}, #{e.createBy}, #{e.createTime}, #{e.updateBy}, #{e.updateTime},#{e.dimension})
+        </foreach>
+    </insert>
+
+    <update id="updateExperimentalRecord" parameterType="ExperimentalRecord">
+        update experimental_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="experimentalId != null">experimental_id = #{experimentalId},</if>
+            <if test="experimentalCount != null">experimental_count = #{experimentalCount},</if>
+            <if test="variable != null">variable = #{variable},</if>
+            <if test="variableValue != null">variable_value = #{variableValue},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExperimentalRecordById" parameterType="Long">
+        delete
+        from experimental_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteExperimentalRecordByIds" parameterType="String">
+        delete from experimental_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteExperimentalRecord" parameterType="Long">
+        delete
+        from experimental_record
+        where 1 = 1
+    </delete>
+</mapper>

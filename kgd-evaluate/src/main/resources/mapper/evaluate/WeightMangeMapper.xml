@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.WeightMangeMapper">
+
+    <resultMap type="WeightMangeData" id="WeightMangeDataResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="level"    column="level"    />
+        <result property="weight"    column="weight"    />
+        <result property="treeView"    column="tree_view"    />
+        <result property="fullPath"    column="full_path"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="score"    column="score"    />
+    </resultMap>
+
+    <select id="selectWeightTree" parameterType="Long" resultMap="WeightMangeDataResult">
+        SELECT
+            id,group_id, name, parent_id, level, IFNULL(weight,0) as weight ,full_path,sort_order,IFNULL(score,0) as score,
+        CASE level
+            WHEN 1 THEN name
+            WHEN 2 THEN CONCAT('├─ ', name)
+            WHEN 3 THEN CONCAT('│  └─ ', name)
+            WHEN 4 THEN CONCAT('│     └─ ', name)
+        END as tree_view
+        FROM weight_tree
+        WHERE group_id = #{groupId}
+        ORDER BY full_path, sort_order
+    </select>
+    <select id="selectWeightTreeAll" parameterType="Long" resultMap="WeightMangeDataResult">
+        SELECT
+            id,group_id, name, parent_id, level, IFNULL(weight,0) as weight ,full_path,sort_order,IFNULL(score,0) as score,
+         level as tree_view
+        FROM weight_tree
+        WHERE group_id = #{groupId}
+        ORDER BY full_path, sort_order
+    </select>
+
+    <update id="updateWeightData" parameterType="WeightMangeData">
+        update weight_tree
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id} and group_id = #{groupId}
+    </update>
+
+
+    <update id="updateWeightScore" parameterType="WeightMangeData">
+        update weight_tree
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="score != null">score = #{score,jdbcType=DECIMAL},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id} and group_id in (1,2)
+    </update>
+
+
+    <select id="tree" resultMap="MapTree">
+        select *
+        from weight_tree
+        where parent_id = #{parentId}
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test="type != null">
+            and type = #{type}
+        </if>
+
+    </select>
+
+
+    <select id="countAvgWeightWithType" resultType="java.math.BigDecimal">
+        SELECT AVG(avg_weight) AS count
+        FROM (
+            SELECT
+            group_id,
+            AVG(weight) AS avg_weight
+            FROM
+            weight_tree
+            WHERE type= #{type}
+            GROUP BY
+            group_id
+            ) AS group_averages;
+    </select>
+
+    <select id="selectUserIds" resultType="java.lang.Long">
+        SELECT group_id FROM weight_tree GROUP BY group_id
+    </select>
+
+    <resultMap id="MapTree" type="com.kgd.evaluate.domain.WeightMangeData">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="level"    column="level"    />
+        <result property="weight"    column="weight"    />
+        <result property="treeView"    column="tree_view"    />
+        <result property="fullPath"    column="full_path"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="score"    column="score"    />
+        <result property="type"    column="type"    />
+        <collection property="children" ofType="com.kgd.evaluate.domain.WeightMangeData"
+                    column="{parentId=id, groupId=group_id,type=type}" select="tree">
+        </collection>
+    </resultMap>
+
+</mapper>

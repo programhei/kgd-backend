@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.datasource.mapper.ExperimentalIdCorrespondenceMapper">
+
+    <resultMap type="ExperimentalIdCorrespondence" id="ExperimentalIdCorrespondenceResult">
+        <result property="id" column="id"/>
+        <result property="digitalId" column="digital_id"/>
+        <result property="dimensionLevel" column="dimension_level"/>
+        <result property="dimension" column="dimension"/>
+        <result property="variableValue" column="variable_value"/>
+        <result property="remark" column="remark"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectExperimentalIdCorrespondenceVo">
+        select id,
+               digital_id,
+               dimension_level,
+               dimension,
+               variable_value,
+               remark,
+               parent_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from experimental_id_correspondence
+    </sql>
+
+    <select id="selectExperimentalIdCorrespondenceList" parameterType="ExperimentalIdCorrespondence"
+            resultMap="ExperimentalIdCorrespondenceResult">
+        <include refid="selectExperimentalIdCorrespondenceVo"/>
+        <where>
+            <if test="digitalId != null  and digitalId != ''">and digital_id = #{digitalId}</if>
+            <if test="dimensionLevel != null  and dimensionLevel != ''">and dimension_level = #{dimensionLevel}</if>
+            <if test="dimension != null  and dimension != ''">and dimension = #{dimension}</if>
+            <if test="variableValue != null  and variableValue != ''">and variable_value = #{variableValue}</if>
+            <if test="parentId != null  and parentId != ''">and parent_id = #{parentId}</if>
+        </where>
+    </select>
+
+    <select id="selectExperimentalIdCorrespondenceById" parameterType="Long"
+            resultMap="ExperimentalIdCorrespondenceResult">
+        <include refid="selectExperimentalIdCorrespondenceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectExperimentalIdCorrespondence" parameterType="ExperimentalIdCorrespondence"
+            resultMap="ExperimentalIdCorrespondenceResult">
+        <include refid="selectExperimentalIdCorrespondenceVo"/>
+        <where>
+            <if test="digitalId != null  and digitalId != ''">and digital_id = #{digitalId}</if>
+            <if test="parentId != null  and parentId != ''">and parent_id = #{parentId}</if>
+        </where>
+    </select>
+
+    <insert id="insertExperimentalIdCorrespondence" parameterType="ExperimentalIdCorrespondence" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into experimental_id_correspondence
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="digitalId != null">digital_id,</if>
+            <if test="dimensionLevel != null">dimension_level,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="variableValue != null">variable_value,</if>
+            <if test="remark != null">remark,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="digitalId != null">#{digitalId},</if>
+            <if test="dimensionLevel != null">#{dimensionLevel},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="variableValue != null">#{variableValue},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateExperimentalIdCorrespondence" parameterType="ExperimentalIdCorrespondence">
+        update experimental_id_correspondence
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="digitalId != null">digital_id = #{digitalId},</if>
+            <if test="dimensionLevel != null">dimension_level = #{dimensionLevel},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="variableValue != null">variable_value = #{variableValue},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExperimentalIdCorrespondenceById" parameterType="Long">
+        delete
+        from experimental_id_correspondence
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteExperimentalIdCorrespondenceByIds" parameterType="String">
+        delete from experimental_id_correspondence where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

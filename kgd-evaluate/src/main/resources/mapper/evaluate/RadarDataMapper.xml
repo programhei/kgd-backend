@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.RadarDataMapper">
+
+    <resultMap type="RadarData" id="RadarDataResult">
+        <result property="id" column="id"/>
+        <result property="dataTitle" column="data_title"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="testCount" column="test_count"/>
+        <result property="discoveryDistance" column="discovery_distance"/>
+        <result property="trackTime" column="track_time"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+        <result property="dimension" column="dimension"/>
+    </resultMap>
+
+    <sql id="selectRadarDataVo">
+        select id,
+               data_title,
+               create_time,
+               create_by,
+               update_time,
+               update_by,
+               test_count,
+               discovery_distance,
+               track_time,
+               data_type,
+               is_standard,
+               dimension
+        from radar_data
+    </sql>
+
+    <select id="selectRadarDataList" parameterType="RadarData" resultMap="RadarDataResult">
+        <include refid="selectRadarDataVo"/>
+        <where>
+            <if test="dataTitle != null  and dataTitle != ''">and data_title = #{dataTitle}</if>
+            <if test="testCount != null ">and test_count = #{testCount}</if>
+            <if test="discoveryDistance != null ">and discovery_distance = #{discoveryDistance}</if>
+            <if test="trackTime != null  and trackTime != ''">and track_time = #{trackTime}</if>
+            <if test="createTime != null  and createTime != ''">and create_time = #{createTime}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectRadarDataById" parameterType="Long" resultMap="RadarDataResult">
+        <include refid="selectRadarDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRadarData" parameterType="RadarData" useGeneratedKeys="true" keyProperty="id">
+        insert into radar_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dataTitle != null">data_title,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="testCount != null">test_count,</if>
+            <if test="discoveryDistance != null">discovery_distance,</if>
+            <if test="trackTime != null">track_time,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="dimension != null">dimension,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataTitle != null">#{dataTitle},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="testCount != null">#{testCount},</if>
+            <if test="discoveryDistance != null">#{discoveryDistance},</if>
+            <if test="trackTime != null">#{trackTime},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="dimension != null">#{dimension},</if>
+        </trim>
+    </insert>
+    <!-- 批量插入，返回主键 id 列表 -->
+    <insert id="insertRadarDataBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into radar_data
+        <!-- 1. 列名：以第一条数据为准 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].dataTitle != null">data_title,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].testCount != null">test_count,</if>
+            <if test="list[0].discoveryDistance != null">discovery_distance,</if>
+            <if test="list[0].trackTime != null">track_time,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].dimension != null">dimension,</if>
+        </trim>
+
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.dataTitle != null">#{item.dataTitle},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.testCount != null">#{item.testCount},</if>
+                <if test="item.discoveryDistance != null">#{item.discoveryDistance},</if>
+                <if test="item.trackTime != null">#{item.trackTime},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.dimension != null">#{item.dimension},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateRadarData" parameterType="RadarData">
+        update radar_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataTitle != null">data_title = #{dataTitle},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="testCount != null">test_count = #{testCount},</if>
+            <if test="discoveryDistance != null">discovery_distance = #{discoveryDistance},</if>
+            <if test="trackTime != null">track_time = #{trackTime},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRadarDataById" parameterType="Long">
+        delete
+        from radar_data
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteRadarDataByIds" parameterType="String">
+        delete from radar_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteRadarDataByDataId" parameterType="java.lang.String">
+        delete
+        from radar_data
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteRadarData" parameterType="java.lang.String">
+        delete
+        from radar_data
+        where is_standard = #{isStandard}
+          and data_type = #{dataType}
+    </delete>
+</mapper>

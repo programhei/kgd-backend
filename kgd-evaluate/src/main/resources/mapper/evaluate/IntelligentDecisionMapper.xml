@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.IntelligentDecisionMapper">
+
+    <resultMap type="IntelligentDecision" id="IntelligentDecisionResult">
+        <result property="id" column="id"/>
+        <result property="dataType" column="data_type"/>
+        <result property="dataContent" column="data_content"/>
+        <result property="valueType" column="value_type"/>
+        <result property="interfaceMeaning" column="interface_meaning"/>
+        <result property="importanceLevel" column="importance_level"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="dataKind" column="data_kind"/>
+        <result property="remark" column="remark"/>
+        <result property="serialNumber" column="serial_number"/>
+        <result property="isFormatCorrect" column="is_format_correct"/>
+        <result property="isMissing" column="is_missing"/>
+        <result property="isInput" column="is_input"/>
+        <result property="dimension" column="dimension"/>
+        <result property="interfaceType" column="interface_type"/>
+    </resultMap>
+
+    <sql id="selectIntelligentDecisionVo">
+        select id,
+               data_type,
+               data_content,
+               value_type,
+               interface_meaning,
+               importance_level,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               data_kind,
+               remark,
+               serial_number,
+               is_missing,
+               is_format_correct,
+               is_input,
+               dimension,
+               interface_type
+        from intelligent_decision
+    </sql>
+
+    <select id="selectIntelligentDecisionList" parameterType="IntelligentDecision"
+            resultMap="IntelligentDecisionResult">
+        <include refid="selectIntelligentDecisionVo"/>
+        <where>
+            <if test="dataType != null  and dataType != ''">and data_type = #{dataType}</if>
+            <if test="dataContent != null  and dataContent != ''">and data_content = #{dataContent}</if>
+            <if test="valueType != null ">and value_type = #{valueType}</if>
+            <if test="interfaceMeaning != null  and interfaceMeaning != ''">and Interface_meaning =
+                #{interfaceMeaning}
+            </if>
+            <if test="importanceLevel != null  and importanceLevel != ''">and importance_level = #{importanceLevel}</if>
+            <if test="dataKind != null  and dataKind != ''">and data_kind = #{dataKind}</if>
+            <if test="isInput != null  and isInput != ''">and is_input = #{isInput}</if>
+            <if test="isInput != null  and isInput != ''">and is_input = #{isInput}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectIntelligentDecisionById" parameterType="Long" resultMap="IntelligentDecisionResult">
+        <include refid="selectIntelligentDecisionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertIntelligentDecision" parameterType="IntelligentDecision" useGeneratedKeys="true" keyProperty="id">
+        insert into intelligent_decision
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dataType != null">data_type,</if>
+            <if test="dataContent != null">data_content,</if>
+            <if test="valueType != null">value_type,</if>
+            <if test="interfaceMeaning != null">interface_meaning,</if>
+            <if test="importanceLevel != null">importance_level,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="dataKind != null">data_kind,</if>
+            <if test="remark != null">remark,</if>
+            <if test="serialNumber != null">serial_number,</if>
+            <if test="isMissing != null">is_missing,</if>
+            <if test="isFormatCorrect != null">is_format_correct,</if>
+            <if test="isInput != null">is_input,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="interfaceType != null">interface_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataType != null">#{dataType},</if>
+            <if test="dataContent != null">#{dataContent},</if>
+            <if test="valueType != null">#{valueType},</if>
+            <if test="interfaceMeaning != null">#{interfaceMeaning},</if>
+            <if test="importanceLevel != null">#{importanceLevel},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="dataKind != null">#{dataKind},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="serialNumber != null">#{serialNumber},</if>
+            <if test="isMissing != null">#{isMissing},</if>
+            <if test="isFormatCorrect != null">#{isFormatCorrect},</if>
+            <if test="isInput != null">#{isInput},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="interfaceType != null">#{interfaceType},</if>
+
+        </trim>
+    </insert>
+
+    <insert id="insertIntelligentDecisionBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into intelligent_decision
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].dataContent != null">data_content,</if>
+            <if test="list[0].valueType != null">value_type,</if>
+            <if test="list[0].interfaceMeaning != null">interface_meaning,</if>
+            <if test="list[0].importanceLevel != null">importance_level,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].dataKind != null">data_kind,</if>
+            <if test="list[0].remark != null">remark,</if>
+            <if test="list[0].serialNumber != null">serial_number,</if>
+            <if test="list[0].isFormatCorrect != null">is_format_correct,</if>
+            <if test="list[0].isMissing != null">is_missing,</if>
+            <if test="list[0].isInput != null">is_input,</if>
+            <if test="list[0].dimension != null">dimension,</if>
+            <if test="list[0].interfaceType != null">interface_type,</if>
+        </trim>
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.dataContent != null">#{item.dataContent},</if>
+                <if test="item.valueType != null">#{item.valueType},</if>
+                <if test="item.interfaceMeaning != null">#{item.interfaceMeaning},</if>
+                <if test="item.importanceLevel != null">#{item.importanceLevel},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.dataKind != null">#{item.dataKind},</if>
+                <if test="item.remark != null">#{item.remark},</if>
+                <if test="item.serialNumber != null">#{item.serialNumber},</if>
+                <if test="item.isFormatCorrect != null">#{item.isFormatCorrect},</if>
+                <if test="item.isMissing != null">#{item.isMissing},</if>
+                <if test="item.isInput != null">#{item.isInput},</if>
+                <if test="item.dimension != null">#{item.dimension},</if>
+                <if test="item.interfaceType != null">#{item.interfaceType},</if>
+
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateIntelligentDecision" parameterType="IntelligentDecision">
+        update intelligent_decision
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="dataContent != null">data_content = #{dataContent},</if>
+            <if test="valueType != null">value_type = #{valueType},</if>
+            <if test="interfaceMeaning != null">interface_meaning = #{interfaceMeaning},</if>
+            <if test="importanceLevel != null">importance_level = #{importanceLevel},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="dataKind != null">data_kind = #{dataKind},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="serialNumber != null">serial_number = #{serialNumber},</if>
+            <if test="isMissing != null">is_missing = #{isMissing},</if>
+            <if test="isFormatCorrect != null">is_format_correct = #{isFormatCorrect},</if>
+            <if test="isInput != null">is_input = #{isInput},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="interfaceType != null">interface_type = #{interfaceType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <!-- 批量更新 intelligent_decision -->
+    <update id="updateIntelligentDecisionBatch" parameterType="java.util.List">
+        UPDATE intelligent_decision
+        <trim prefix="SET" suffixOverrides=",">
+            <!-- 动态列：只更新列表里非 null 的字段 -->
+            <if test="list != null and list.size() > 0">
+                <!-- 每个字段一条 CASE WHEN -->
+                data_type = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.dataType}
+                </foreach>
+                ELSE data_type END,
+                data_content = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.dataContent}
+                </foreach>
+                ELSE data_content END,
+                value_type = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.valueType}
+                </foreach>
+                ELSE value_type END,
+                interface_meaning = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.interfaceMeaning}
+                </foreach>
+                ELSE interface_meaning END,
+                importance_level = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.importanceLevel}
+                </foreach>
+                ELSE importance_level END,
+                create_by = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.createBy}
+                </foreach>
+                ELSE create_by END,
+                create_time = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.createTime}
+                </foreach>
+                ELSE create_time END,
+                update_by = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.updateBy}
+                </foreach>
+                ELSE update_by END,
+                update_time = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.updateTime}
+                </foreach>
+                ELSE update_time END,
+                data_kind = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.dataKind}
+                </foreach>
+                ELSE data_kind END,
+                remark = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.remark}
+                </foreach>
+                ELSE remark END,
+                serial_number = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.serialNumber}
+                </foreach>
+                ELSE serial_number END,
+                is_missing = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.isMissing}
+                </foreach>
+                ELSE is_missing END,
+                is_format_correct = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.isFormatCorrect}
+                </foreach>
+                ELSE is_format_correct END,
+                is_input = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.isInput}
+                </foreach>
+                ELSE is_input END,
+                dimension = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.dimension}
+                </foreach>
+                ELSE dimension END,
+                interface_type = CASE id
+                <foreach collection="list" item="item">
+                    WHEN #{item.id} THEN #{item.interfaceType}
+                </foreach>
+                ELSE interface_type END
+            </if>
+        </trim>
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteIntelligentDecisionById" parameterType="Long">
+        delete
+        from intelligent_decision
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteIntelligentDecisionByIds" parameterType="String">
+        delete from intelligent_decision where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteIntelligentDecisionByDataId" parameterType="Long">
+        delete
+        from intelligent_decision
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteIntelligentDecision" parameterType="Long">
+        delete
+        from intelligent_decision
+        where 1 = 1
+    </delete>
+</mapper>

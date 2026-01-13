@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.datasource.mapper.WeightMapper">
+
+    <resultMap type="Weight" id="WeightResult">
+        <result property="id" column="id"/>
+        <result property="subjectiveWeight" column="subjective_weight"/>
+        <result property="objectiveWeight" column="objective_weight"/>
+        <result property="dimension" column="dimension"/>
+        <result property="variable" column="variable"/>
+        <result property="variableValue" column="variable_value"/>
+        <result property="coefficientK1" column="coefficient_k1"/>
+        <result property="coefficientK2" column="coefficient_k2"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="comprehensiveWeight" column="comprehensive_weight"/>
+    </resultMap>
+
+    <resultMap type="WeightRecord" id="WeightRecordResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="level"    column="level"    />
+        <result property="weight"    column="weight"    />
+        <result property="treeView"    column="tree_view"    />
+        <result property="fullPath"    column="full_path"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="score"    column="score"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+    <select id="selectWeightRecordList" parameterType="WeightRecord" resultMap="WeightRecordResult">
+        SELECT
+        id,group_id, name, parent_id, level, IFNULL(weight,0) as weight ,full_path,sort_order,IFNULL(score,0) as score,
+        CASE level
+        WHEN 1 THEN name
+        WHEN 2 THEN CONCAT('├─ ', name)
+        WHEN 3 THEN CONCAT('│  └─ ', name)
+        WHEN 4 THEN CONCAT('│     └─ ', name)
+        END as tree_view
+        FROM weight_tree
+        WHERE id = #{id}  AND group_id = #{groupId} and type= #{type}
+         -- 查询特定ID的节点
+        ORDER BY full_path, sort_order
+    </select>
+    <update id="updateWeightRecord" parameterType="WeightRecord">
+        update weight_tree
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id} and group_id = #{groupId}
+    </update>
+
+    <update id="updateWeightRecord_score" parameterType="WeightRecord">
+        update weight_tree
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="score != null">score = #{score},</if>
+        </trim>
+        where name = #{name}
+    </update>
+
+    <insert id="insertWeightRecord" parameterType="WeightRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `weight_tree` ( `type`,`group_id`,
+        `id`,
+        `name`,
+        `parent_id`,
+        `level`,
+        `weight`,
+        `score`,
+        `full_path`,
+        `sort_order`,
+        `create_by`,
+        `create_time`,
+        `update_by`,
+        `update_time` )
+        VALUES
+        (#{type}, #{groupId}, #{id}, #{name}, #{parentId}, #{level}, #{weight}, 0, #{fullPath}, #{sortOrder}, #{createBy}, #{createTime}, NULL, NULL )
+
+    </insert>
+
+    <sql id="selectWeightVo">
+        select id,
+               subjective_weight,
+               objective_weight,
+               dimension,
+               variable,
+               variable_value,
+               coefficient_k1,
+               coefficient_k2,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               comprehensive_weight
+        from weight
+    </sql>
+
+    <select id="selectWeightList" parameterType="Weight" resultMap="WeightResult">
+        <include refid="selectWeightVo"/>
+        <where>
+            <if test="subjectiveWeight != null ">and subjective_weight = #{subjectiveWeight}</if>
+            <if test="objectiveWeight != null ">and objective_weight = #{objectiveWeight}</if>
+            <if test="dimension != null  and dimension != ''">and dimension = #{dimension}</if>
+            <if test="variable != null  and variable != ''">and variable = #{variable}</if>
+            <if test="variableValue != null  and variableValue != ''">and variable_value = #{variableValue}</if>
+            <if test="coefficientK1 != null ">and coefficient_k1 = #{coefficientK1}</if>
+            <if test="coefficientK2 != null ">and coefficient_k2 = #{coefficientK2}</if>
+        </where>
+    </select>
+
+
+    <select id="selectWeightById" parameterType="Long" resultMap="WeightResult">
+        <include refid="selectWeightVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWeight" parameterType="Weight" useGeneratedKeys="true" keyProperty="id">
+        insert into weight
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="subjectiveWeight != null">subjective_weight,</if>
+            <if test="objectiveWeight != null">objective_weight,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="variable != null">variable,</if>
+            <if test="variableValue != null">variable_value,</if>
+            <if test="coefficientK1 != null">coefficient_k1,</if>
+            <if test="coefficientK2 != null">coefficient_k2,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="comprehensiveWeight != null">comprehensive_weight,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="subjectiveWeight != null">#{subjectiveWeight},</if>
+            <if test="objectiveWeight != null">#{objectiveWeight},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="variable != null">#{variable},</if>
+            <if test="variableValue != null">#{variableValue},</if>
+            <if test="coefficientK1 != null">#{coefficientK1},</if>
+            <if test="coefficientK2 != null">#{coefficientK2},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="comprehensiveWeight != null">#{comprehensiveWeight},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertWeightBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into weight
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].subjectiveWeight != null">subjective_weight,</if>
+            <if test="list[0].objectiveWeight != null">objective_weight,</if>
+            <if test="list[0].dimension != null">dimension,</if>
+            <if test="list[0].variable != null">variable,</if>
+            <if test="list[0].variableValue != null">variable_value,</if>
+            <if test="list[0].coefficientK1 != null">coefficient_k1,</if>
+            <if test="list[0].coefficientK2 != null">coefficient_k2,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].comprehensiveWeight != null">comprehensive_weight,</if>
+        </trim>
+
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.subjectiveWeight != null">#{item.subjectiveWeight},</if>
+                <if test="item.objectiveWeight != null">#{item.objectiveWeight},</if>
+                <if test="item.dimension != null">#{item.dimension},</if>
+                <if test="item.variable != null">#{item.variable},</if>
+                <if test="item.variableValue != null">#{item.variableValue},</if>
+                <if test="item.coefficientK1 != null">#{item.coefficientK1},</if>
+                <if test="item.coefficientK2 != null">#{item.coefficientK2},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.comprehensiveWeight != null">#{item.comprehensiveWeight},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateWeight" parameterType="Weight">
+        update weight
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="subjectiveWeight != null">subjective_weight = #{subjectiveWeight},</if>
+            <if test="objectiveWeight != null">objective_weight = #{objectiveWeight},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="variable != null">variable = #{variable},</if>
+            <if test="variableValue != null">variable_value = #{variableValue},</if>
+            <if test="coefficientK1 != null">coefficient_k1 = #{coefficientK1},</if>
+            <if test="coefficientK2 != null">coefficient_k2 = #{coefficientK2},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="comprehensiveWeight != null">comprehensive_weight = #{comprehensiveWeight},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWeightById" parameterType="Long">
+        delete
+        from weight
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteWeightByIds" parameterType="String">
+        delete from weight where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWeight" parameterType="Long">
+        delete
+        from weight
+        where 1 = 1
+    </delete>
+
+    <!-- FuelConsumptionExcelVo -->
+    <insert id="insertFuelConsumptionExcelVo_standard" parameterType="FuelConsumptionExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_fuel_consumption_standard` ( `time`,
+                                    `fuel6k`,
+                                    `fuel8k`,
+                                    `fuel10k`,
+                                    `fuel12k`,
+                                    `fuel14k` )
+        VALUES
+            ( #{time}, #{fuelConsumption6000}, #{fuelConsumption8000}, #{fuelConsumption10000}, #{fuelConsumption12000}, #{fuelConsumption14000} )
+    </insert>
+
+    <insert id="insertFuelConsumptionExcelVo_test" parameterType="FuelConsumptionExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_fuel_consumption_test` ( `time`,
+                                                           `fuel6k`,
+                                                           `fuel8k`,
+                                                           `fuel10k`,
+                                                           `fuel12k`,
+                                                           `fuel14k` )
+        VALUES
+            ( #{time}, #{fuelConsumption6000}, #{fuelConsumption8000}, #{fuelConsumption10000}, #{fuelConsumption12000}, #{fuelConsumption14000} )
+    </insert>
+
+    <resultMap type="FuelConsumptionExcelVo" id="FuelConsumptionExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="fuelConsumption6000"    column="fuel6k"    />
+        <result property="fuelConsumption8000"    column="fuel8k"    />
+        <result property="fuelConsumption10000"    column="fuel10k"    />
+        <result property="fuelConsumption12000"    column="fuel12k"    />
+        <result property="fuelConsumption14000"    column="fuel14k"    />
+    </resultMap>
+    <select id="selectFuelConsumptionExcelVo_standard" parameterType="FuelConsumptionExcelVo" resultMap="FuelConsumptionExcelVoResult">
+        SELECT *
+        FROM accuracy_fuel_consumption_standard
+    </select>
+    <select id="selectFuelConsumptionExcelVo_test" parameterType="FuelConsumptionExcelVo" resultMap="FuelConsumptionExcelVoResult">
+        SELECT *
+        FROM accuracy_fuel_consumption_test
+    </select>
+
+    <delete id="deleteFuelConsumptionExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_fuel_consumption_standard
+    </delete>
+
+    <delete id="deleteFuelConsumptionExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_fuel_consumption_test
+    </delete>
+
+    <!-- HeadingAngleExcelVo -->
+    <insert id="insertHeadingAngleExcelVo_standard" parameterType="HeadingAngleExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_heading_angle_standard` ( `time`,
+                                                        `angle60`,
+                                                        `angle120`)
+        VALUES
+            ( #{time}, #{commandHeading60}, #{commandHeading120} )
+    </insert>
+
+    <insert id="insertHeadingAngleExcelVo_test" parameterType="HeadingAngleExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_heading_angle_test` ( `time`,
+                                                    `angle60`,
+                                                    `angle120`)
+        VALUES
+            ( #{time}, #{commandHeading60}, #{commandHeading120} )
+    </insert>
+
+    <resultMap type="HeadingAngleExcelVo" id="HeadingAngleExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="commandHeading60"    column="angle60"    />
+        <result property="commandHeading120"    column="angle120"    />
+    </resultMap>
+    <select id="selectHeadingAngleExcelVo_standard" parameterType="HeadingAngleExcelVo" resultMap="HeadingAngleExcelVoResult">
+        SELECT *
+        FROM accuracy_heading_angle_standard
+    </select>
+    <select id="selectHeadingAngleExcelVo_test" parameterType="HeadingAngleExcelVo" resultMap="HeadingAngleExcelVoResult">
+        SELECT *
+        FROM accuracy_heading_angle_test
+    </select>
+
+    <delete id="deleteHeadingAngleExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_heading_angle_standard
+    </delete>
+
+    <delete id="deleteHeadingAngleExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_heading_angle_test
+    </delete>
+
+    <insert id="insertMaxOverloadExcelVo_standard" parameterType="MaxOverloadExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_maximum_overload_standard` (`time`, `overload`) VALUES (#{time}, #{overload});
+    </insert>
+
+    <insert id="insertMaxOverloadExcelVo_test" parameterType="MaxOverloadExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_maximum_overload_test` (`time`, `overload`) VALUES (#{time}, #{overload});
+    </insert>
+
+    <insert id="insertPerformanceAccuracyExcelVo_standard" parameterType="PerformanceAccuracyExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_performance_standard` (`dimension`, `type`, `variable`, `variablevalue`, `comment`) VALUES (#{dimension}, #{type}, #{variable}, #{variableValue}, #{remarks});
+    </insert>
+
+    <insert id="insertPerformanceAccuracyExcelVo_test" parameterType="PerformanceAccuracyExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_performance_test` (`dimension`, `type`, `variable`, `variablevalue`, `comment`) VALUES (#{dimension}, #{type}, #{variable}, #{variableValue}, #{remarks});
+    </insert>
+
+    <resultMap type="MaxOverloadExcelVo" id="MaxOverloadExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="overload"    column="overload"    />
+    </resultMap>
+    <select id="selectMaxOverloadExcelVo_standard" parameterType="MaxOverloadExcelVo" resultMap="MaxOverloadExcelVoResult">
+        SELECT *
+        FROM accuracy_maximum_overload_standard
+    </select>
+    <select id="selectMaxOverloadExcelVo_test" parameterType="MaxOverloadExcelVo" resultMap="MaxOverloadExcelVoResult">
+        SELECT *
+        FROM accuracy_maximum_overload_test
+    </select>
+
+    <resultMap type="PerformanceAccuracyExcelVo" id="PerformanceAccuracyExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="dimension"    column="dimension"    />
+        <result property="type"    column="type"    />
+        <result property="variable"    column="variable"    />
+        <result property="variableValue"    column="variablevalue"    />
+        <result property="remarks"    column="comment"    />
+    </resultMap>
+    <select id="selectPerformanceAccuracyExcelVo_standard" parameterType="PerformanceAccuracyExcelVo" resultMap="PerformanceAccuracyExcelVoResult">
+        SELECT *
+        FROM accuracy_performance_standard
+        <where>
+            <if test="dimension != null">
+                and dimension = #{dimension}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="variable != null">
+                and variable = #{variable}
+            </if>
+            <if test="searchValue != null">
+                and variablevalue like concat('%',#{searchValue},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectPerformanceAccuracyExcelVo_test" parameterType="PerformanceAccuracyExcelVo" resultMap="PerformanceAccuracyExcelVoResult">
+        SELECT *
+        FROM accuracy_performance_test
+        <where>
+            <if test="dimension != null">
+                and dimension = #{dimension}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="variable != null">
+                and variable = #{variable}
+            </if>
+            <if test="searchValue != null">
+                and variablevalue like concat('%',#{searchValue},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteMaxOverloadExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_maximum_overload_standard
+    </delete>
+
+    <delete id="deleteMaxOverloadExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_maximum_overload_test
+    </delete>
+
+    <delete id="deletePerformanceAccuracyExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_performance_standard
+    </delete>
+
+    <delete id="deletePerformanceAccuracyExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_performance_test
+    </delete>
+
+
+    <insert id="insertRollAngleExcelVo_standard" parameterType="RollAngleExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_roll_angle_standard` (
+            `time`,
+            `angle30`,
+            `angle60`)
+        VALUES
+            ( #{time}, #{pitchAngle30}, #{pitchAngle60} )
+    </insert>
+
+    <insert id="insertRollAngleExcelVo_test" parameterType="RollAngleExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_roll_angle_test` (
+            `time`,
+            `angle30`,
+            `angle60`)
+        VALUES
+            ( #{time}, #{pitchAngle30}, #{pitchAngle60} )
+    </insert>
+
+    <insert id="insertSpeedCommandExcelVo_standard" parameterType="SpeedCommandExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_speed_standard` (
+            `time`,
+            `speed`)
+        VALUES
+            ( #{time}, #{speed} )
+    </insert>
+
+    <insert id="insertSpeedCommandExcelVo_test" parameterType="SpeedCommandExcelVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `accuracy_speed_test` (
+            `time`,
+            `speed`)
+        VALUES
+            ( #{time}, #{speed} )
+    </insert>
+
+
+    <resultMap type="RollAngleExcelVo" id="RollAngleExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="pitchAngle30"    column="angle30"    />
+        <result property="pitchAngle60"    column="angle60"    />
+    </resultMap>
+    <select id="selectRollAngleExcelVo_standard" parameterType="RollAngleExcelVo" resultMap="RollAngleExcelVoResult">
+        SELECT *
+        FROM accuracy_roll_angle_standard
+    </select>
+    <select id="selectRollAngleExcelVo_test" parameterType="RollAngleExcelVo" resultMap="RollAngleExcelVoResult">
+        SELECT *
+        FROM accuracy_roll_angle_test
+    </select>
+
+
+    <resultMap type="SpeedCommandExcelVo" id="SpeedCommandExcelVoResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="speed"   column="speed"    />
+    </resultMap>
+    <select id="selectSpeedCommandExcelVo_standard" parameterType="SpeedCommandExcelVo" resultMap="SpeedCommandExcelVoResult">
+        SELECT *
+        FROM accuracy_speed_standard
+    </select>
+    <select id="selectSpeedCommandExcelVo_test" parameterType="SpeedCommandExcelVo" resultMap="SpeedCommandExcelVoResult">
+        SELECT *
+        FROM accuracy_speed_test
+    </select>
+
+
+    <delete id="deleteRollAngleExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_roll_angle_standard
+    </delete>
+
+    <delete id="deleteRollAngleExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_roll_angle_test
+    </delete>
+
+    <delete id="deleteSpeedCommandExcelVo_standard" parameterType="Long">
+        delete
+        from accuracy_speed_standard
+    </delete>
+
+    <delete id="deleteSpeedCommandExcelVo_test" parameterType="Long">
+        delete
+        from accuracy_speed_test
+    </delete>
+
+
+
+</mapper>

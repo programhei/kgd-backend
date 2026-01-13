@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.datasource.mapper.MaxAccelerationStandardMapper">
+
+    <resultMap id="MaxAccelerationStandardVoResult" type="MaxAccelerationStandardVo">
+        <result property="id" column="id"/>
+        <result property="time" column="time"/>
+        <result property="height6000" column="height_6000"/>
+        <result property="height8000" column="height_8000"/>
+        <result property="height10000" column="height_10000"/>
+        <result property="height12000" column="height_12000"/>
+        <result property="height14000" column="height_14000"/>
+        <result property="evaluateType" column="evaluate_type"/>
+        <result property="speedOrTest" column="speed_or_test"/>
+    </resultMap>
+
+    <sql id="selectMaxAccelerationStandardColumns">
+        select id,
+               time,
+               height_6000,
+               height_8000,
+               height_10000,
+               height_12000,
+               height_14000,
+               evaluate_type,
+               speed_or_test
+        from max_acceleration_standard
+    </sql>
+
+    <select id="selectMaxAccelerationStandardList" parameterType="MaxAccelerationStandardVo" resultMap="MaxAccelerationStandardVoResult">
+        <include refid="selectMaxAccelerationStandardColumns"/>
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="time != null">and time = #{time}</if>
+            <if test="height6000 != null">and height_6000 = #{height6000}</if>
+            <if test="height8000 != null">and height_8000 = #{height8000}</if>
+            <if test="height10000 != null">and height_10000 = #{height10000}</if>
+            <if test="height12000 != null">and height_12000 = #{height12000}</if>
+            <if test="height14000 != null">and height_14000 = #{height14000}</if>
+            <if test="evaluateType != null">and evaluate_type = #{evaluateType}</if>
+            <if test="speedOrTest != null">and speed_or_test = #{speedOrTest}</if>
+        </where>
+        order by time
+    </select>
+
+    <select id="selectMaxAccelerationStandardById" parameterType="Long" resultMap="MaxAccelerationStandardVoResult">
+        <include refid="selectMaxAccelerationStandardColumns"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectMaxAccelerationStandardAll" resultMap="MaxAccelerationStandardVoResult">
+        <include refid="selectMaxAccelerationStandardColumns"/>
+    </select>
+
+    <insert id="insertMaxAccelerationStandard" parameterType="MaxAccelerationStandardVo" useGeneratedKeys="true" keyProperty="id">
+        insert into max_acceleration_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="time != null">time,</if>
+            <if test="height6000 != null">height_6000,</if>
+            <if test="height8000 != null">height_8000,</if>
+            <if test="height10000 != null">height_10000,</if>
+            <if test="height12000 != null">height_12000,</if>
+            <if test="height14000 != null">height_14000,</if>
+            <if test="evaluateType != null">evaluate_type,</if>
+            <if test="speedOrTest != null">speed_or_test,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="time != null">#{time},</if>
+            <if test="height6000 != null">#{height6000},</if>
+            <if test="height8000 != null">#{height8000},</if>
+            <if test="height10000 != null">#{height10000},</if>
+            <if test="height12000 != null">#{height12000},</if>
+            <if test="height14000 != null">#{height14000},</if>
+            <if test="evaluateType != null">#{evaluateType},</if>
+            <if test="speedOrTest != null">#{speedOrTest},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertMaxAccelerationStandardBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into max_acceleration_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].time != null">time,</if>
+            <if test="list[0].height6000 != null">height_6000,</if>
+            <if test="list[0].height8000 != null">height_8000,</if>
+            <if test="list[0].height10000 != null">height_10000,</if>
+            <if test="list[0].height12000 != null">height_12000,</if>
+            <if test="list[0].height14000 != null">height_14000,</if>
+            <if test="list[0].evaluateType != null">evaluate_type,</if>
+            <if test="list[0].speedOrTest != null">speed_or_test,</if>
+        </trim>
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.time != null">#{item.time},</if>
+                <if test="item.height6000 != null">#{item.height6000},</if>
+                <if test="item.height8000 != null">#{item.height8000},</if>
+                <if test="item.height10000 != null">#{item.height10000},</if>
+                <if test="item.height12000 != null">#{item.height12000},</if>
+                <if test="item.height14000 != null">#{item.height14000},</if>
+                <if test="item.evaluateType != null">#{item.evaluateType},</if>
+                <if test="item.speedOrTest != null">#{item.speedOrTest},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateMaxAccelerationStandard" parameterType="MaxAccelerationStandardVo">
+        update max_acceleration_standard
+        <trim prefix="set" suffixOverrides=",">
+            <if test="time != null">time = #{time},</if>
+            <if test="height6000 != null">height_6000 = #{height6000},</if>
+            <if test="height8000 != null">height_8000 = #{height8000},</if>
+            <if test="height10000 != null">height_10000 = #{height10000},</if>
+            <if test="height12000 != null">height_12000 = #{height12000},</if>
+            <if test="height14000 != null">height_14000 = #{height14000},</if>
+            <if test="evaluateType != null">evaluate_type = #{evaluateType},</if>
+            <if test="speedOrTest != null">speed_or_test = #{speedOrTest},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMaxAccelerationStandardById" parameterType="Long">
+        delete from max_acceleration_standard where id = #{id}
+    </delete>
+
+    <delete id="deleteMaxAccelerationStandardByIds" parameterType="String">
+        delete from max_acceleration_standard where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMaxAccelerationStandardByType" parameterType="map">
+        delete from max_acceleration_standard
+        <where>
+            <if test="evaluateType != null">and evaluate_type = #{evaluateType}</if>
+            <if test="speedOrTest != null">and speed_or_test = #{speedOrTest}</if>
+        </where>
+    </delete>
+
+</mapper>
+

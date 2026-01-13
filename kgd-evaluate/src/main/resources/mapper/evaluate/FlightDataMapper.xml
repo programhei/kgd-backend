@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.FlightDataMapper">
+
+    <resultMap type="FlightData" id="FlightDataResult">
+        <result property="id" column="id"/>
+        <result property="flightTime" column="flight_time"/>
+        <result property="flightSpeed" column="flight_speed"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="height" column="height"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="dataTitle" column="data_title"/>
+        <result property="headingAngle" column="heading_angle"/>
+        <result property="overload" column="overload"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+        <result property="dimension" column="dimension"/>
+        <result property="specificFuelConsumption" column="specific_fuel_consumption"/>
+        <result property="fuelConsumption" column="fuel_consumption"/>
+    </resultMap>
+
+    <sql id="selectFlightDataVo">
+        select id,
+               flight_time,
+               flight_speed,
+               longitude,
+               latitude,
+               height,
+               create_by,
+               update_by,
+               update_time,
+               create_time,
+               data_title,
+               heading_angle,
+               overload,
+               data_type,
+               is_standard,
+               specific_fuel_consumption,
+               fuel_consumption,
+               dimension
+        from flight_data
+    </sql>
+
+    <select id="selectFlightDataList" parameterType="FlightData" resultMap="FlightDataResult">
+        <include refid="selectFlightDataVo"/>
+        <where>
+            <if test="flightTime != null  and flightTime != ''">and flight_time = #{flightTime}</if>
+            <if test="flightSpeed != null ">and flight_speed = #{flightSpeed}</if>
+            <if test="longitude != null ">and longitude = #{longitude}</if>
+            <if test="latitude != null ">and latitude = #{latitude}</if>
+            <if test="height != null ">and height = #{height}</if>
+            <if test="dataTitle != null  and dataTitle != ''">and data_title = #{dataTitle}</if>
+            <if test="headingAngle != null ">and heading_angle = #{headingAngle}</if>
+            <if test="overload != null ">and overload = #{overload}</if>
+            <if test="createTime != null  and createTime != ''">and create_time = #{createTime}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+            <if test="dimension != null  and dimension != ''">and dimension = #{dimension}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectFlightDataById" parameterType="Long" resultMap="FlightDataResult">
+        <include refid="selectFlightDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFlightData" parameterType="FlightData" useGeneratedKeys="true" keyProperty="id">
+        insert into flight_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="flightTime != null">flight_time,</if>
+            <if test="flightSpeed != null">flight_speed,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="height != null">height,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="dataTitle != null">data_title,</if>
+            <if test="headingAngle != null">heading_angle,</if>
+            <if test="overload != null">overload,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="specificFuelConsumption != null">specific_fuel_consumption,</if>
+            <if test="fuelConsumption != null">fuel_consumption,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="flightTime != null">#{flightTime},</if>
+            <if test="flightSpeed != null">#{flightSpeed},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="height != null">#{height},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="dataTitle != null">#{dataTitle},</if>
+            <if test="headingAngle != null">#{headingAngle},</if>
+            <if test="overload != null">#{overload},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="fuelConsumption != null">#{specificFuelConsumption},</if>
+            <if test="fuelConsumption != null">#{fuelConsumption},</if>
+        </trim>
+    </insert>
+    <insert id="insertFlightDataBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into flight_data
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].flightTime != null">flight_time,</if>
+            <if test="list[0].flightSpeed != null">flight_speed,</if>
+            <if test="list[0].longitude != null">longitude,</if>
+            <if test="list[0].latitude != null">latitude,</if>
+            <if test="list[0].height != null">height,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].dataTitle != null">data_title,</if>
+            <if test="list[0].headingAngle != null">heading_angle,</if>
+            <if test="list[0].overload != null">overload,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].dimension != null">dimension,</if>
+            <if test="list[0].specificFuelConsumption != null">specific_fuel_consumption,</if>
+            <if test="list[0].fuelConsumption != null">fuel_consumption,</if>
+        </trim>
+
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.flightTime != null">#{item.flightTime},</if>
+                <if test="item.flightSpeed != null">#{item.flightSpeed},</if>
+                <if test="item.longitude != null">#{item.longitude},</if>
+                <if test="item.latitude != null">#{item.latitude},</if>
+                <if test="item.height != null">#{item.height},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.dataTitle != null">#{item.dataTitle},</if>
+                <if test="item.headingAngle != null">#{item.headingAngle},</if>
+                <if test="item.overload != null">#{item.overload},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.dimension != null">#{item.dimension},</if>
+                <if test="item.specificFuelConsumption != null">#{item.specificFuelConsumption},</if>
+                <if test="item.fuelConsumption != null">#{item.fuelConsumption},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateFlightData" parameterType="FlightData">
+        update flight_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flightTime != null">flight_time = #{flightTime},</if>
+            <if test="flightSpeed != null">flight_speed = #{flightSpeed},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="height != null">height = #{height},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="dataTitle != null">data_title = #{dataTitle},</if>
+            <if test="headingAngle != null">heading_angle = #{headingAngle},</if>
+            <if test="overload != null">overload = #{overload},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="specificFuelConsumption != null">specific_fuel_consumption = #{specificFuelConsumption},</if>
+            <if test="fuelConsumption != null">fuel_consumption = #{fuelConsumption},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFlightDataById" parameterType="Long">
+        delete
+        from flight_data
+        where id = #{id}
+    </delete>
+
+
+    <delete id="deleteFlightDataByIds" parameterType="String">
+        delete from flight_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFlightDataByDataId" parameterType="java.lang.String">
+        delete
+        from flight_data
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteFlightData" parameterType="java.lang.String">
+        delete
+        from flight_data
+        where is_standard = #{isStandard}
+          and data_type = #{dataType}
+    </delete>
+</mapper>

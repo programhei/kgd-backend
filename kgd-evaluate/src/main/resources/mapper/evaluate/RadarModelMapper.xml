@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.RadarModelMapper">
+
+    <resultMap type="RadarModel" id="RadarModelResult">
+        <result property="id" column="id"/>
+        <result property="detectionDistance" column="detection_distance"/>
+        <result property="detectionRange" column="detection_range"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+        <result property="maxTime" column="max_time"/>
+        <result property="maxScanningRange" column="max_scanning_range"/>
+
+    </resultMap>
+
+    <sql id="selectRadarModelVo">
+        select id,
+               detection_distance,
+               detection_range,
+
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               data_type,
+               is_standard,
+               max_scanning_range
+        from radar_model
+    </sql>
+
+    <select id="selectRadarModelList" parameterType="RadarModel" resultMap="RadarModelResult">
+        <include refid="selectRadarModelVo"/>
+        <where>
+            <if test="detectionRange != null  and detectionRange != ''">and detection_range = #{detectionRange}</if>
+            <if test="detectionRange != null  and detectionRange != ''">and detection_range =
+                #{detectionRange}
+            </if>
+            <if test="dataType != null  and dataType != ''">and data_type = #{dataType}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectRadarModelById" parameterType="Long" resultMap="RadarModelResult">
+        <include refid="selectRadarModelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRadarModel" parameterType="RadarModel" useGeneratedKeys="true" keyProperty="id">
+        insert into radar_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="detectionDistance != null">detection_distance,</if>
+            <if test="detectionRange != null">detection_range,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+            <if test="maxScanningRange != null">max_scanning_range,</if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="detectionDistance != null">#{detectionDistance},</if>
+            <if test="detectionRange != null">#{detectionRange},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+            <if test="maxScanningRange != null">#{maxScanningRange},</if>
+
+        </trim>
+    </insert>
+    <!-- 批量新增，只插入非空字段 -->
+    <insert id="insertRadarModelBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO radar_model
+        (
+        <trim suffixOverrides=",">
+            <if test="list[0].detectionDistance != null">detection_distance,</if>
+            <if test="list[0].detectionRange != null">detection_range,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+            <if test="list[0].maxScanningRange != null">max_scanning_range,</if>
+        </trim>
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            <trim suffixOverrides=",">
+                <if test="item.detectionDistance != null">#{item.detectionDistance},</if>
+                <if test="item.detectionRange != null">#{item.detectionRange},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+                <if test="item.maxScanningRange != null">#{item.maxScanningRange},</if>
+
+            </trim>
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateRadarModel" parameterType="RadarModel">
+        update radar_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="detectionDistance != null">detection_distance = #{detectionDistance},</if>
+            <if test="detectionRange != null">detection_range = #{detectionRange},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+            <if test="maxScanningRange != null">max_scanning_range = #{maxScanningRange},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRadarModelById" parameterType="Long">
+        delete
+        from radar_model
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteRadarModelByIds" parameterType="String">
+        delete from radar_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteRadarModelByDataId" parameterType="java.lang.String">
+        delete
+        from radar_model
+        where create_time = #{dataId}
+    </delete>
+</mapper>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.SoftwareQualityMapper">
+
+    <resultMap type="SoftwareQuality" id="SoftwareQualityResult">
+        <result property="id" column="id"/>
+        <result property="timeResponseCharact" column="time_response_charact"/>
+        <result property="resourceUtilization" column="resource_utilization"/>
+        <result property="codeCommentRate" column="code_comment_rate"/>
+        <result property="codeStandardRate" column="code_standard_rate"/>
+        <result property="continuousRunTime" column="continuous_run_time"/>
+        <result property="interfaceFaultTolerance" column="interface_fault_tolerance"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSoftwareQualityVo">
+        select id,
+               time_response_charact,
+               resource_utilization,
+               code_comment_rate,
+               code_standard_rate,
+               continuous_run_time,
+               interface_fault_tolerance,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from software_quality
+    </sql>
+
+    <select id="selectSoftwareQualityList" parameterType="SoftwareQuality" resultMap="SoftwareQualityResult">
+        <include refid="selectSoftwareQualityVo"/>
+        <where>
+            <if test="timeResponseCharact != null  and timeResponseCharact != ''">and time_response_charact = #{timeResponseCharact}</if>
+            <if test="resourceUtilization != null  and resourceUtilization != ''">and resource_utilization = #{resourceUtilization}</if>
+            <if test="codeCommentRate != null  and codeCommentRate != ''">and code_comment_rate = #{codeCommentRate}</if>
+            <if test="codeStandardRate != null  and codeStandardRate != ''">and code_standard_rate = #{codeStandardRate}</if>
+            <if test="continuousRunTime != null  and continuousRunTime != ''">and continuous_run_time = #{continuousRunTime}</if>
+            <if test="interfaceFaultTolerance != null  and interfaceFaultTolerance != ''">and interface_fault_tolerance = #{interfaceFaultTolerance}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectSoftwareQualityById" parameterType="Long" resultMap="SoftwareQualityResult">
+        <include refid="selectSoftwareQualityVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSoftwareQuality" parameterType="SoftwareQuality" useGeneratedKeys="true" keyProperty="id">
+        insert into software_quality
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="timeResponseCharact != null">time_response_charact,</if>
+            <if test="resourceUtilization != null">resource_utilization,</if>
+            <if test="codeCommentRate != null">code_comment_rate,</if>
+            <if test="codeStandardRate != null">code_standard_rate,</if>
+            <if test="continuousRunTime != null">continuous_run_time,</if>
+            <if test="interfaceFaultTolerance != null">interface_fault_tolerance,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="timeResponseCharact != null">#{timeResponseCharact},</if>
+            <if test="resourceUtilization != null">#{resourceUtilization},</if>
+            <if test="codeCommentRate != null">#{codeCommentRate},</if>
+            <if test="codeStandardRate != null">#{codeStandardRate},</if>
+            <if test="continuousRunTime != null">#{continuousRunTime},</if>
+            <if test="interfaceFaultTolerance != null">#{interfaceFaultTolerance},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 批量新增，只插入非空字段 -->
+    <insert id="insertSoftwareQualityBatch" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO software_quality
+        (
+        <trim suffixOverrides=",">
+            <if test="list[0].timeResponseCharact != null">time_response_charact,</if>
+            <if test="list[0].resourceUtilization != null">resource_utilization,</if>
+            <if test="list[0].codeCommentRate != null">code_comment_rate,</if>
+            <if test="list[0].codeStandardRate != null">code_standard_rate,</if>
+            <if test="list[0].continuousRunTime != null">continuous_run_time,</if>
+            <if test="list[0].interfaceFaultTolerance != null">interface_fault_tolerance,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+        </trim>
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            <trim suffixOverrides=",">
+                <if test="item.timeResponseCharact != null">#{item.timeResponseCharact},</if>
+                <if test="item.resourceUtilization != null">#{item.resourceUtilization},</if>
+                <if test="item.codeCommentRate != null">#{item.codeCommentRate},</if>
+                <if test="item.codeStandardRate != null">#{item.codeStandardRate},</if>
+                <if test="item.continuousRunTime != null">#{item.continuousRunTime},</if>
+                <if test="item.interfaceFaultTolerance != null">#{item.interfaceFaultTolerance},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+            </trim>
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateSoftwareQuality" parameterType="SoftwareQuality">
+        update software_quality
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="timeResponseCharact != null">time_response_charact = #{timeResponseCharact},</if>
+            <if test="resourceUtilization != null">resource_utilization = #{resourceUtilization},</if>
+            <if test="codeCommentRate != null">code_comment_rate = #{codeCommentRate},</if>
+            <if test="codeStandardRate != null">code_standard_rate = #{codeStandardRate},</if>
+            <if test="continuousRunTime != null">continuous_run_time = #{continuousRunTime},</if>
+            <if test="interfaceFaultTolerance != null">interface_fault_tolerance = #{interfaceFaultTolerance},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSoftwareQualityById" parameterType="Long">
+        delete from software_quality where id = #{id}
+    </delete>
+
+    <delete id="deleteSoftwareQualityByIds" parameterType="String">
+        delete from software_quality where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSoftwareQualityByDataId" parameterType="java.util.Date">
+        delete
+        from software_quality
+        where create_time = #{dataId}
+    </delete>
+
+    <delete id="deleteAllSoftwareQuality">
+        delete
+        from software_quality
+    </delete>
+</mapper>

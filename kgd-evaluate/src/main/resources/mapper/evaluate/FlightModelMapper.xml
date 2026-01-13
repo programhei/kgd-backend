@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.FlightModelMapper">
+
+    <resultMap type="FlightModel" id="FlightModelResult">
+        <result property="id" column="id"/>
+        <result property="acceleration" column="acceleration"/>
+        <result property="maximumSpeed" column="maximum_speed"/>
+        <result property="maximumOverload" column="maximum_overload"/>
+        <result property="fuelRate" column="fuel_rate"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createBy" column="create_by"/>
+        <result property="dataType" column="data_type"/>
+        <result property="isStandard" column="is_standard"/>
+    </resultMap>
+
+    <sql id="selectFlightModelVo">
+        select id,
+               acceleration,
+               maximum_speed,
+               maximum_overload,
+               fuel_rate,
+               create_time,
+               update_time,
+               update_by,
+               create_by,
+               data_type,
+               is_standard
+        from flight_model
+    </sql>
+
+    <select id="selectFlightModelList" parameterType="FlightModel" resultMap="FlightModelResult">
+        <include refid="selectFlightModelVo"/>
+        <where>
+            <if test="acceleration != null  and acceleration != ''">and acceleration = #{acceleration}</if>
+            <if test="maximumSpeed != null  and maximumSpeed != ''">and maximum_speed = #{maximumSpeed}</if>
+            <if test="maximumOverload != null  and maximumOverload != ''">and maximum_overload = #{maximumOverload}</if>
+            <if test="fuelRate != null  and fuelRate != ''">and fuel_rate = #{fuelRate}</if>
+            <if test="dataType != null  and dataType != ''">and data_type = #{dataType}</if>
+            <if test="isStandard != null  and isStandard != ''">and is_standard = #{isStandard}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectFlightModelById" parameterType="Long" resultMap="FlightModelResult">
+        <include refid="selectFlightModelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFlightModel" parameterType="FlightModel" useGeneratedKeys="true" keyProperty="id">
+        insert into flight_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="acceleration != null">acceleration,</if>
+            <if test="maximumSpeed != null">maximum_speed,</if>
+            <if test="maximumOverload != null">maximum_overload,</if>
+            <if test="fuelRate != null">fuel_rate,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="isStandard != null">is_standard,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="acceleration != null">#{acceleration},</if>
+            <if test="maximumSpeed != null">#{maximumSpeed},</if>
+            <if test="maximumOverload != null">#{maximumOverload},</if>
+            <if test="fuelRate != null">#{fuelRate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="isStandard != null">#{isStandard},</if>
+        </trim>
+    </insert>
+
+
+    <insert id="insertFlightModelBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into flight_model
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].acceleration != null">acceleration,</if>
+            <if test="list[0].maximumSpeed != null">maximum_speed,</if>
+            <if test="list[0].maximumOverload != null">maximum_overload,</if>
+            <if test="list[0].fuelRate != null">fuel_rate,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].dataType != null">data_type,</if>
+            <if test="list[0].isStandard != null">is_standard,</if>
+        </trim>
+        values
+
+
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.acceleration != null">#{item.acceleration},</if>
+                <if test="item.maximumSpeed != null">#{item.maximumSpeed},</if>
+                <if test="item.maximumOverload != null">#{item.maximumOverload},</if>
+                <if test="item.fuelRate != null">#{item.fuelRate},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.dataType != null">#{item.dataType},</if>
+                <if test="item.isStandard != null">#{item.isStandard},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateFlightModel" parameterType="FlightModel">
+        update flight_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="acceleration != null">acceleration = #{acceleration},</if>
+            <if test="maximumSpeed != null">maximum_speed = #{maximumSpeed},</if>
+            <if test="maximumOverload != null">maximum_overload = #{maximumOverload},</if>
+            <if test="fuelRate != null">fuel_rate = #{fuelRate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="isStandard != null">is_standard = #{isStandard},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFlightModelById" parameterType="Long">
+        delete
+        from flight_model
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteFlightModelByIds" parameterType="String">
+        delete from flight_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFlightModelByDataId" parameterType="java.lang.String">
+        delete
+        from flight_model
+        where create_time = #{dataId}
+    </delete>
+</mapper>

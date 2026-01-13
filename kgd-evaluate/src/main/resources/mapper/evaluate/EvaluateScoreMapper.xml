@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kgd.evaluate.mapper.EvaluateScoreMapper">
+
+    <resultMap type="EvaluateScore" id="EvaluateScoreResult">
+        <result property="id"    column="id"    />
+        <result property="score"    column="score"    />
+        <result property="scoreType"    column="score_type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="reason"    column="reason"    />
+        <result property="totalScore"    column="total_score"    />
+    </resultMap>
+
+    <sql id="selectEvaluateScoreVo">
+        select id,
+               score,
+               score_type,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               reason,
+               total_score
+        from evaluate_score
+    </sql>
+
+    <select id="selectEvaluateScoreList" parameterType="EvaluateScore" resultMap="EvaluateScoreResult">
+        <include refid="selectEvaluateScoreVo"/>
+        <where>
+            <if test="score != null ">and score = #{score}</if>
+            <if test="scoreType != null  and scoreType != ''">and score_type = #{scoreType}</if>
+            <if test="reason != null  and reason != ''">and reason = #{reason}</if>
+            <if test="totalScore != null ">and total_score = #{totalScore}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectEvaluateScoreById" parameterType="Long" resultMap="EvaluateScoreResult">
+        <include refid="selectEvaluateScoreVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEvaluateScore" parameterType="EvaluateScore" useGeneratedKeys="true" keyProperty="id">
+        insert into evaluate_score
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="score != null">score,</if>
+            <if test="scoreType != null">score_type,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="reason != null">reason,</if>
+            <if test="totalScore != null">total_score,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="score != null">#{score},</if>
+            <if test="scoreType != null">#{scoreType},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+        </trim>
+    </insert>
+    <insert id="insertEvaluateScoreBatch"
+            parameterType="java.util.List"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into evaluate_score
+        <!-- 1. 列名：拿第一条数据决定即可，后面每条都一样 -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].score != null">score,</if>
+            <if test="list[0].scoreType != null">score_type,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].reason != null">reason,</if>
+            <if test="list[0].totalScore != null">total_score,</if>
+        </trim>
+
+        values
+        <!-- 2. 多值拼接 -->
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.score != null">#{item.score},</if>
+                <if test="item.scoreType != null">#{item.scoreType},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.reason != null">#{item.reason},</if>
+                <if test="item.totalScore != null">#{item.totalScore},</if>
+            </trim>
+        </foreach>
+    </insert>
+    <update id="updateEvaluateScore" parameterType="EvaluateScore">
+        update evaluate_score
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="score != null">score = #{score},</if>
+            <if test="scoreType != null">score_type = #{scoreType},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="totalScore != null">total_score = #{totalScore},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEvaluateScoreById" parameterType="Long">
+        delete
+        from evaluate_score
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteEvaluateScoreByIds" parameterType="String">
+        delete from evaluate_score where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
